@@ -50,6 +50,9 @@ provisions:
 //##########################################################################################################################
 // Parameters for PSP Display
 // Graphics is 480x272 pixels.  This gives us 80 chars per line and 22 lines per screen
+//#define TFT_HANN
+#define TFT_PSP
+
 #define VGA_VRES	 	272											// 272 Vert graphics resolution (pixels)
 #define VGA_HRES	 	480											// 480 Horiz graphics resolution (pixels)
 #define VGA_LINE_N   	286        									// 286 number of lines in VGA frame
@@ -58,8 +61,9 @@ provisions:
 #define VGA_VSYNC_N  	10          								// 10 V sync lines
 #define VGA_VBLANK_N 	14  										// 14 Nbr of blank lines
 #define VGA_PREEQ_N  	2         									// 2 Nbr blank lines at the bottom of the screen
-#define VGA_POSTEQ_N 	2 											// 2 Nbr blank lines at the top of the screen
+#define VGA_POSTEQ_N 	3 											// PSP,HANN: 2 Nbr blank lines at the top of the screen
 #define VGA_HSYNC_T  	40*VGA_PIX_T                   				// HSYNC width), 41 SPI clock cycles width horizontal pulse
+
 //##########################################################################################################################
 
 // Common paramaters for Composite video
@@ -131,8 +135,6 @@ volatile int FlashSync;
 const unsigned int PalVgaOption = 0xffffffff;						// use to hold the pal/vga setting in flash
 const unsigned int VideoOption = 0xffffffff;						// use to hold the video off/on setting in flash
 
-
-
 // configure a SPI channel and its associated DMA feed
 void SetupSPI (int SPIchnl, int SPIint, int SPIpixt, void *SPIinput, int DMAchnl, int DMAsize, int *VBuffer) {
 	// setup the DMA to send data to the SPI channels
@@ -151,6 +153,7 @@ void SetupSPI (int SPIchnl, int SPIint, int SPIpixt, void *SPIinput, int DMAchnl
     nop;
     nop;
     nop;
+    // nop;
     
     // Due to a bug in the PIC32 SPI (Microchip Errata #13) each SPI channel (red, green, blue) can start at a slightly
     // different times causing the colours to not correctly align (ie, colour fringing on white text).
@@ -220,46 +223,15 @@ void initVideo( void) {
     VCount = 1;                 									// set the count so that the first interrupt will increment the state
     screenWidth = HRes / (fontWidth * fontScale);
         
-#if defined(COLOUR)
-    CLine = NULL;
-    ConsoleBgColour = CurrentBgColour = DefaultBgColour = 0;
-//    if(vga) {
-        ModeC = 3;  ModeP = 0;                                              // set the default mode for VGA to all eight colours
-        VideoBufGrn = getmemory((VBuf * HBuf) / 8);                         // allocate the additional buffers for green and blue in normal memory (the heap)    
-        VideoBufBlu = getmemory((VBuf * HBuf) / 8);
-        ConsoleFgColour = CurrentFgColour = DefaultFgColour = 7;            // default colour for text output
-        SetupSPI(P_RED_SPI, P_RED_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_RED_SPI_INPUT, 1, HBuf/8, VideoBufRed); // set up the Red channel
-        SetupSPI(P_GRN_SPI, P_GRN_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_GRN_SPI_INPUT, 0, HBuf/8, VideoBufGrn); // set up the Green channel
-        SetupSPI(P_BLU_SPI, P_BLU_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_BLU_SPI_INPUT, 3, HBuf/8, VideoBufBlu); // set up the Blue channel
-/*    } else {
-        ModeC = 1;  ModeP = 4;                                              // set the mode for composite to monochrome
-        VideoBufGrn = VideoBufBlu = NULL;                                   // disable the other colours
-        ConsoleFgColour = CurrentFgColour = DefaultFgColour = 4;            // default colour for text output
-        SetupSPI(P_RED_SPI, P_RED_SPI_INTERRUPT, C_PIX_T, (void *)&P_RED_SPI_INPUT, 1, C_BLANKPAD, (void*)zero);// use Red as the monochrome channel
-    	DmaChnOpen( 0, 0, DMA_OPEN_DEFAULT);		                        // setup DMA 0 to pump the data from the graphics buffer to the SPI peripheral
-    	DmaChnSetEventControl(0, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(P_RED_SPI_INTERRUPT));
-	    DmaChnSetTxfer(0, (void*)VideoBufRed, (void *)&P_RED_SPI_INPUT, HBuf/8 + 6, 4, 4);
-    	DmaChnSetControlFlags(0, DMA_CTL_CHAIN_EN | DMA_CTL_CHAIN_DIR);    	// chain DMA 0 so that it will start on completion of the DMA 1 transfer
-    }
-*/
- #else  //  monochrome Maximite
-    if(vga) {
-	    SpiChnOpen(P_VIDEO_SPI, SPICON_ON | SPICON_MSTEN |  SPICON_MODE32 | SPICON_FRMEN | SPICON_FRMSYNC | SPICON_FRMPOL, VGA_PIX_T);
-        DmaChnOpen(1, 1, DMA_OPEN_DEFAULT);    	                            // setup DMA 1 to send data to SPI channel 2
-        DmaChnSetEventControl(1, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(P_SPI_INTERRUPT));
-	    DmaChnSetTxfer(1, (void*)VideoBuf, (void *)&P_SPI_INPUT, HBuf/8, 4, 4);
-    } else {
-	    SpiChnOpen(P_VIDEO_SPI, SPICON_ON | SPICON_MSTEN | SPICON_MODE32 | SPICON_FRMEN | SPICON_FRMSYNC | SPICON_FRMPOL, C_PIX_T);
-        DmaChnOpen(1, 1, DMA_OPEN_DEFAULT);    	                            // setup DMA 1 is the blank padding at the start of a scan line
-        DmaChnSetEventControl(1, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(P_SPI_INTERRUPT));
-	    DmaChnSetTxfer(1, (void*)zero, (void *)&P_SPI_INPUT, C_BLANKPAD, 4, 4);
-    	DmaChnOpen( 0, 0, DMA_OPEN_DEFAULT);		                        // setup DMA 0 to pump the data from the graphics buffer to the SPI peripheral
-    	DmaChnSetEventControl(0, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(P_SPI_INTERRUPT));
-	    DmaChnSetTxfer(0, (void*)VideoBuf, (void *)&P_SPI_INPUT, HBuf/8 + 6, 4, 4);
-    	DmaChnSetControlFlags(0, DMA_CTL_CHAIN_EN | DMA_CTL_CHAIN_DIR);    	// chain DMA 0 so that it will start on completion of the DMA 1 transfer
-    }
- #endif
-
+	CLine = NULL;
+	ConsoleBgColour = CurrentBgColour = DefaultBgColour = 0;
+	ModeC = 3;  ModeP = 0;                                              // set the default mode for VGA to all eight colours
+	VideoBufGrn = getmemory((VBuf * HBuf) / 8);                         // allocate the additional buffers for green and blue in normal memory (the heap)    
+	VideoBufBlu = getmemory((VBuf * HBuf) / 8);
+	ConsoleFgColour = CurrentFgColour = DefaultFgColour = 7;            // default colour for text output
+	SetupSPI(P_RED_SPI, P_RED_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_RED_SPI_INPUT, 1, HBuf/8, VideoBufRed); // set up the Red channel
+	SetupSPI(P_GRN_SPI, P_GRN_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_GRN_SPI_INPUT, 0, HBuf/8, VideoBufGrn); // set up the Green channel
+	SetupSPI(P_BLU_SPI, P_BLU_SPI_INTERRUPT, VGA_PIX_T, (void *)&P_BLU_SPI_INPUT, 3, HBuf/8, VideoBufBlu); // set up the Blue channel
 }
 
 
@@ -267,6 +239,7 @@ void initVideo( void) {
 /**************************************************************************************************
 Timer 3 interrupt.
 Used to generate the horiz and vert sync pulse under control of the state machine
+modified for TFT use by cm
 ***************************************************************************************************/
 void __ISR(_TIMER_3_VECTOR, ipl7) T3Interrupt(void) {
     #if defined(COLOUR)
@@ -279,43 +252,33 @@ void __ISR(_TIMER_3_VECTOR, ipl7) T3Interrupt(void) {
     #endif
 
     switch ( VState) {    											// vertical state machine
+
+#if defined(TFT_PSP)
+
         case SV_PREEQ:  // 0            							// prepare for the new horizontal line
-            #if defined(COLOUR)  
                 VPtrRed = VideoBufRed;
                 VPtrGrn = VideoBufGrn;
                 VPtrBlu = VideoBufBlu;
                 lcnt = 0;
-            #else
-                VPtr = VideoBuf;
-            #endif
             break;
-
         case SV_SYNC:   // 1
-            if(!vga) P_VID_OC_REG = SvSyncT;                        // start the vertical sync pulse for composite
             P_VERT_SET_LO;										    // start the vertical sync pulse for vga
             break;
 
         case SV_POSTEQ: // 2
-        	if(!vga) P_VID_OC_REG = C_HSYNC_T; 			            // end of the vertical sync pulse for composite
             P_VERT_SET_HI;									        // end of the vertical sync pulse for vga
             break;
 
         case SV_LINE:   // 3
-            #if defined(COLOUR)
                 if(VPtrRed) {
-//                    if(ModeC != 4) P_RED_SPI_INPUT = 0;            	// preload the SPI inputs with 4 zero bytes to pad the start of the video
-//                    if(vga)
-                    	DCH1SSA = KVA_TO_PA((void*) (VPtrRed));     // update the DMA1 source address (DMA1 is used for VGA data)
-//                    else
-//                    	DCH0SSA = KVA_TO_PA((void*) (VPtrRed - 1)); // update the DMA0 source address (DMA0 is used for composite data)
+                   	DCH1SSA = KVA_TO_PA((void*) (VPtrRed));			// update the DMA1 source address (DMA1 is used for VGA data)
                     if(ModeC != 4 || lcnt & 1) VPtrRed += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
-                    if(CLine) {                                     // depending on the scan line setting for red, enable the DMA transfer
+                    if(CLine) {										 // depending on the scan line setting for red, enable the DMA transfer
                         if(CLine[lcnt] & RED) DmaChnEnable(1);
                     } else
-                        DmaChnEnable(1);
+                        DmaChnEnable(1);							// arm the DMA transfer
                 }    
                 if(VPtrGrn) {
-//                    if(ModeC != 4) P_GRN_SPI_INPUT = 0;             // ditto for green
                     DCH0SSA = KVA_TO_PA((void*) (VPtrGrn));         // update the DMA0 source address used for green
                     if(ModeC != 4 || lcnt & 1) VPtrGrn += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
                     if(CLine) {                                     // depending on the scan line setting for green, enable the DMA transfer
@@ -324,7 +287,6 @@ void __ISR(_TIMER_3_VECTOR, ipl7) T3Interrupt(void) {
                         DmaChnEnable(0);
                 }    
                 if(VPtrBlu) {
-//                    if(ModeC != 4) P_BLU_SPI_INPUT = 0;             // same again for blue
                     DCH3SSA = KVA_TO_PA((void*) (VPtrBlu));         // update the DMA3 source address used for blue
                     if(ModeC != 4 || lcnt & 1) VPtrBlu += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
                     if(CLine) {                                     // depending on the scan line setting for blue, enable the DMA transfer
@@ -333,21 +295,59 @@ void __ISR(_TIMER_3_VECTOR, ipl7) T3Interrupt(void) {
                         DmaChnEnable(3);
                     lcnt++;
                 }    
-            #else
-                P_SPI_INPUT = 0;            						// preload the SPI with 4 zero bytes to pad the start of the video
-                if(vga)
-                	DCH1SSA = KVA_TO_PA((void*) (VPtr));            // update the DMA1 source address (DMA1 is used for VGA data)
-                else
-                	DCH0SSA = KVA_TO_PA((void*) (VPtr - 1));        // update the DMA0 source address (DMA0 is used for composite data)
-                VPtr += HBuf/32;									// move the pointer to the start of the next line
-                DmaChnEnable(1);									// arm the DMA transfer
-            #endif
             break;
+#endif
+
+#if defined(TFT_HANN)
+        case SV_PREEQ:  // 0            							// prepare for the new horizontal line
+                VPtrRed = VideoBufRed;
+                VPtrGrn = VideoBufGrn;
+                VPtrBlu = VideoBufBlu;
+                lcnt = 0;
+            break;
+
+        case SV_SYNC:   // 1
+            P_VERT_SET_LO;										    // start the vertical sync pulse for vga
+            break;
+
+        case SV_POSTEQ: // 2
+            break;
+
+        case SV_LINE:   // 3
+				P_VERT_SET_HI;									    // end of the vertical sync pulse for vga
+                if(VPtrRed) {
+                   	DCH1SSA = KVA_TO_PA((void*) (VPtrRed));     // update the DMA1 source address (DMA1 is used for VGA data)
+                    if(ModeC != 4 || lcnt & 1) VPtrRed += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
+                    if(CLine) {                                     // depending on the scan line setting for red, enable the DMA transfer
+                        if(CLine[lcnt] & RED) DmaChnEnable(1);
+                    } else
+                        DmaChnEnable(1);							// arm the DMA transfer
+                }    
+                if(VPtrGrn) {
+                    DCH0SSA = KVA_TO_PA((void*) (VPtrGrn));         // update the DMA0 source address used for green
+                    if(ModeC != 4 || lcnt & 1) VPtrGrn += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
+                    if(CLine) {                                     // depending on the scan line setting for green, enable the DMA transfer
+                        if(CLine[lcnt] & GREEN) DmaChnEnable(0);
+                    } else
+                        DmaChnEnable(0);
+                }    
+                if(VPtrBlu) {
+                    DCH3SSA = KVA_TO_PA((void*) (VPtrBlu));         // update the DMA3 source address used for blue
+                    if(ModeC != 4 || lcnt & 1) VPtrBlu += HBuf/32;	// move the pointers to the start of the next line (if mode 4 do this on uneven lines only)
+                    if(CLine) {                                     // depending on the scan line setting for blue, enable the DMA transfer
+                        if(CLine[lcnt] & BLUE) DmaChnEnable(3);
+                    } else
+                        DmaChnEnable(3);
+                    lcnt++;
+                }    
+            break;
+#endif
    }
 
     if (--VCount == 0) {											// count down the number of lines
         VCount = VC[VState&3];										// set the new count
         VState = VS[VState&3];    									// and advance the state machine
+
     }
 
     mT3ClearIntFlag();    											// clear the interrupt flag
