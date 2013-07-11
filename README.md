@@ -19,24 +19,24 @@ For those who want to compile their own firmware: Use my video.c source file ins
 
 Touchscreen additions:
 
-Touch Item Size <<x_size>,<<y_size>		'set button/switch size in pixels for all subsequent TouchItemCreates
+Touch Item Size *x_size*,*y_size*		'set button/switch size in pixels for all subsequent TouchItemCreates
 
-Touch Item Create <<refnum>, x, y, "Caption", <<colour>, <<type> [B][S][R][C] ' make (B)utton or (S)witch or (R)adio or (C)heckbox
+Touch Item Create *refnum*, x, y, "Caption", *colour*, *type* [B][S][R][C] ' make (B)utton or (S)witch or (R)adio or (C)heckbox
 
-Touch Value(<<refnum>) = value			' set touch item value manually
+Touch Value(*refnum*) = value			' set touch item value manually
 
 Touch Check     ' handle all buttons/switch events and set items accordingly, to be used within loop
 
-<<value> = Touch Value(<<refnum>)	' retrieve value of touch item (and reset button state to unpressed)
-<<xcoord> = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none
-<<ycoord> = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none
-<<refnum> = Touch Value(#I)	' retrieve item Refnum of last item hit
+*value* = Touch Value(*refnum*)	' retrieve value of touch item (and reset button state to unpressed)
+*xcoord* = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none
+*ycoord* = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none
+*refnum* = Touch Value(#I)	' retrieve item Refnum of last item hit
 
 Touch Release	' Wait for any touch released
 
 Touch Wait	' Wait until any touch happened
 
-Touch Item Remove [<<refnum>][,<<refnum>,<<refnum>,..]	' remove one or more touch item from list
+Touch Item Remove [*refnum*][,*refnum*,*refnum*,..]	' remove one or more touch item from list
 Touch Item Remove ALL	' remove all touch item from list
 
 See BTNDEMO.BAS in DEMO.zip for example use.
