@@ -153,7 +153,7 @@ void SetupSPI (int SPIchnl, int SPIint, int SPIpixt, void *SPIinput, int DMAchnl
     nop;
     nop;
     nop;
-    // nop;
+    nop;
     
     // Due to a bug in the PIC32 SPI (Microchip Errata #13) each SPI channel (red, green, blue) can start at a slightly
     // different times causing the colours to not correctly align (ie, colour fringing on white text).

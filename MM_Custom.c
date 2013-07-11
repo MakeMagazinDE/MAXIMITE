@@ -327,102 +327,6 @@ void drawItemIdx(int index) {
 	}
 }
 
-// TouchCreateItem(x,y),"Text", Index, Color, B or S (Button/Switch
-void cmd_createitem(void) {
-	int x1, y1, colour, index, temp;
-	int is_button = 0;
-	int is_switch = 0;
-	int is_radio = 0;
-	int is_check = 0;
-	char *s, *p;
-
-	getargs(&cmdline, 9, ",");
-	if(argc < 7) error("MM_Custom - Invalid syntax");
-	x1 = lastx; y1 = lasty; colour = DefaultFgColour;		// set the defaults for optional components
-	p = argv[0];
-	if(*p != '(') error("MM_Custom - Expected opening bracket");
-	getcoord(p + 1, &x1, &y1);
-	p = getclosebracket(p + 1) + 1;
-
-	index = getinteger(argv[4]);
-	if(index > MAX_NBR_OF_BTNS || index < 0) error("MM_Custom - Index out of range");
-
-	colour = getinteger(argv[6]);
-  
-	if(argc == 9) {
-		is_button = (strchr(argv[8], 'b') != NULL || strchr(argv[8], 'B') != NULL);
-		is_switch = (strchr(argv[8], 's') != NULL || strchr(argv[8], 'S') != NULL);
-		is_radio = (strchr(argv[8], 'r') != NULL || strchr(argv[8], 'R') != NULL);
-		is_check = (strchr(argv[8], 'c') != NULL || strchr(argv[8], 'C') != NULL);
-	}
-
-	s = "OK";
-	if(argc > 2 && *argv[2]) {
-		s = getstring(argv[2]);									// the string
-	}
-	item_init[index] = 0x55AA;	// validize button
-	item_left[index] = x1;
-	item_right[index] = x1+item_sizex;
-	item_top[index] = y1;
-	item_bottom[index] = y1+item_sizey;
-	item_value[index] = 0;	// default OFF
-	temp = TOUCH_TYPE_NONE;								// default empty graphic
-	if(is_button)
-		temp = TOUCH_TYPE_BUTTON;	// is a button
-	if(is_switch)
-		temp = TOUCH_TYPE_SWITCH;	// is a switch
-	if(is_radio)
-		temp = TOUCH_TYPE_RADIO;	// is a radio button
-	if(is_check)
-		temp = TOUCH_TYPE_CHECK;	// is a ckeckbox
-	item_type[index] = temp;
-	item_colour[index] = colour;
-	strncpy(item_text[index],s,14);
-	drawItemIdx(index);
-	
-	lastx = x1; lasty = y1;			// save in case the user wants the last value
-	touch_active = 1;
-}
-
-void cmd_removeitem(void) {
-// RemoveButton nbr or RemoveSwitch nbr - makes button/switch nbr invalid
-int index;
-	index = getinteger(cmdline); // the button to remove
-    if(index < 0 || index > MAX_NBR_OF_BTNS) error("MM_Custom - Index out of range");
-	item_init[index] = 0;	// de-validize button
-	touch_active = 0;	
-    for(index = 0; index <= MAX_NBR_OF_BTNS; index++) {
-		if (item_init[index] == 0x55AA) touch_active = 1;	// any item active?			
-	}
-}
-
-
-void cmd_setitem(void) {
-// TouchItem(nbr) = 1 or 0 - set button/switch nbr on or off
-int index, value;
-	index = getinteger(cmdline);
-    if(index < 0 || index > MAX_NBR_OF_BTNS) error("MM_Custom - Index out of range");
-
-	while(*cmdline && tokenfunction(*cmdline) != op_equal) cmdline++;
-	if(!*cmdline) error("MM_Custom - Invalid syntax");
-	++cmdline;
-	if(!*cmdline) error("MM_Custom - Missing value");
-	value = getinteger(cmdline);
-	if(value) item_value[index] = 1;	// button ON
-	else item_value[index] = 0;
-	drawItemIdx(index);	
-}
-
-void cmd_itemsize(void) {
-// set 
-	getargs(&cmdline, 3, ",");
-	if(argc != 3) error("Invalid syntax");
-	item_sizex = getinteger(argv[0]);
-	item_sizey = getinteger(argv[2]);
-	if(item_sizex < 10 || item_sizey < 10) error("MM_Custom - Touch item too small");
-}
-
-
 
 int checkItem(int x, int y, int index) {
 // check if Item (idx) is touched - so x and y fall into item's coord scope
@@ -434,17 +338,73 @@ int checkItem(int x, int y, int index) {
 
 	return 1;
 }
-void cmd_touchrelease(void) {
-// check if touched and wait until released
-	if (DetectTouch()) {
-		while (DetectTouch()) mSec(50);  // wait for touch released
-	}
+	
+	
+void cmd_touchval(void) {
+// TouchItem(<itemnbr>) = 1 or 0 - set button/switch nbr on or off
+int index, value;
+	index = getinteger(cmdline);
+    if(index < 0 || index > MAX_NBR_OF_BTNS) error("Touch index out of range");
+
+	while(*cmdline && tokenfunction(*cmdline) != op_equal) cmdline++;
+	if(!*cmdline) error("Invalid syntax");
+	++cmdline;
+	if(!*cmdline) error("Missing value");
+	value = getinteger(cmdline);
+	if(value) item_value[index] = 1;	// button ON
+	else item_value[index] = 0;
+	drawItemIdx(index);	
 }
 
-void fun_getitem(void) {
-int index, value;
+
+void fun_touchval(void) {
+	int index, value;
+	long temp;
+	char *p;
+	
+	if((p = checkstring(ep, "#X")) != NULL) {
+		if (!DetectTouch())	{
+			fret = -1;
+			return;
+		}
+		value = GetTouchX();
+		if (!DetectTouch())	{
+			fret = -1;
+			return;
+		}
+		value -= TOUCH_OFS_X;	// Offset Y
+		if (value > TOUCH_MAX_X) value = TOUCH_MAX_X;
+		if (value < 0) value = 0;
+		temp = ((long)value * TOUCH_SCALE_X) / 1000;
+	
+		fret = (float)temp;
+		return;
+	}
+	if((p = checkstring(ep, "#Y")) != NULL) {
+		if (!DetectTouch())	{
+			fret = -1;
+			return;
+		}
+		value = GetTouchY();
+		if (!DetectTouch())	{
+			fret = -1;
+			return;
+		}
+		value -= TOUCH_OFS_Y;	// Offset Y
+		if (value > TOUCH_MAX_Y) value = TOUCH_MAX_Y;
+		if (value < 0) value = 0;
+		temp = ((long)value * TOUCH_SCALE_Y) / 1000;
+	
+		fret = (float)temp;
+		return;
+	}
+	if((p = checkstring(ep, "#I")) != NULL) {
+		fret = (float)last_item_hit;
+		return;
+	}
+
 	index = getinteger(ep);	// only one param
-    if(index < 0 || index > MAX_NBR_OF_BTNS) error("MM_Custom - Index out of range");
+    if(index < 0 || index > MAX_NBR_OF_BTNS) error("Touch index out of range");
 
 	if (item_init[index] != 0x55AA) {
 		fret = -1;
@@ -457,54 +417,11 @@ int index, value;
 			drawItemIdx(index);		// redraw me
 		}
 	fret = (float)value;
-}
-
-void fun_touchitemhit(void) {
-	fret = (float)last_item_hit;
-}
-
-void fun_touchx(void) {
-	int value;
-	long temp;
-	if (!DetectTouch())	{
-		fret = -1;
-		return;
-	}
-	value = GetTouchX();
-	if (!DetectTouch())	{
-		fret = -1;
-		return;
-	}
-	value -= TOUCH_OFS_X;	// Offset X
-	if (value < 0) value = 0;
-	if (value > TOUCH_MAX_X) value = TOUCH_MAX_X;
-	temp = ((long)value * TOUCH_SCALE_X) / 1000;
-
-	fret = (float)temp;
+		
 }
 
 
-void fun_touchy(void) {
-	int value;
-	long temp;
-	if (!DetectTouch())	{
-		fret = -1;
-		return;
-	}
-	value = GetTouchY();
-	if (!DetectTouch())	{
-		fret = -1;
-		return;
-	}
-	value -= TOUCH_OFS_Y;	// Offset Y
-	if (value > TOUCH_MAX_Y) value = TOUCH_MAX_Y;
-	if (value < 0) value = 0;
-	temp = ((long)value * TOUCH_SCALE_Y) / 1000;
-
-	fret = (float)temp;
-}
-
-void cmd_checktouch(void) {
+void checktouch(void) {
 // run one touchscreen cycle and check if button/switch hit
 	int index, x, y, myitemtype, radio_hit;
 	long temp;
@@ -581,23 +498,155 @@ void cmd_checktouch(void) {
 	}
 }
 
+void cmd_touch(void) {
+/* example for using multiple cmd defs: SPRITE MOVE n, x, y[, colour]    
+	char *p;
+   	int i, x, y, c;
+	if((p = checkstring(cmdline, "MOVE")) != NULL) {
+	    getargs(&p, 7, ",");
+	    if(!(argc == 5 || argc == 7)) error("Invalid number of parameters");
+    	i = getinteger(argv[0]);
+	    x = getinteger(argv[2]);
+	    y = getinteger(argv[4]);
+	    if(argc == 7) 
+	        c = getinteger(argv[6]);
+	    else
+	        c = 0;
+*/
+
+   	int i, x, y, c, temp;
+	int is_button = 0;
+	int is_switch = 0;
+	int is_radio = 0;
+	int is_check = 0;
+	char *s, *p;
+    
+	if((p = checkstring(cmdline, "ITEM CREATE")) != NULL) {
+	    getargs(&p, 11, ",");
+		if(argc < 8) error("Invalid touch syntax");
+
+    	i = getinteger(argv[0]);
+    	
+	    x = getinteger(argv[2]);
+	    y = getinteger(argv[4]);		
+/*
+// TODO: Will that work?
+		p = argv[xxx];
+		// the start point is specified
+		if(*p != '(') error("Expected coordinate opening bracket");
+		getcoord(p + 1, &x, &y);
+		p = getclosebracket(p + 1) + 1;
+*/
+
+		c = getinteger(argv[8]);
+
+	    
+		if(i > MAX_NBR_OF_BTNS || i < 0) error("Touch index out of range");
+
+		s = "OK";
+		if(*argv[6]) {
+			s = getstring(argv[6]);									// the caption string
+		}
+		
+		if(argc == 11) {
+			is_button = (strchr(argv[10], 'b') != NULL || strchr(argv[10], 'B') != NULL);
+			is_switch = (strchr(argv[10], 's') != NULL || strchr(argv[10], 'S') != NULL);
+			is_radio = (strchr(argv[10], 'r') != NULL || strchr(argv[10], 'R') != NULL);
+			is_check = (strchr(argv[10], 'c') != NULL || strchr(argv[10], 'C') != NULL);
+		}		
+		
+		item_init[i] = 0x55AA;	// validize button
+		item_left[i] = x;
+		item_right[i] = x+item_sizex;
+		item_top[i] = y;
+		item_bottom[i] = y+item_sizey;
+		item_value[i] = 0;	// default OFF
+		temp = TOUCH_TYPE_NONE;								// default empty graphic
+		if(is_button)
+			temp = TOUCH_TYPE_BUTTON;	// is a button
+		if(is_switch)
+			temp = TOUCH_TYPE_SWITCH;	// is a switch
+		if(is_radio)
+			temp = TOUCH_TYPE_RADIO;	// is a radio button
+		if(is_check)
+			temp = TOUCH_TYPE_CHECK;	// is a ckeckbox
+		item_type[i] = temp;
+		item_colour[i] = c;
+		strncpy(item_text[i],s,14);
+		drawItemIdx(i);
+		touch_active = 1;
+		return;
+	}
+	if((p = checkstring(cmdline, "ITEM REMOVE")) != NULL) {
+    	int k;
+    
+    	getargs(&p, (MAX_ARG_COUNT * 2) - 1, ",");		// getargs macro must be the first executable stmt in a block
+
+        if(checkstring(argv[0], "ALL")) {			// if the argument is ALL load all active sprites into the array
+		    for(i = 0; i <= MAX_NBR_OF_BTNS; i++) {
+				item_init[i] = 0;	// de-validize all items		
+			}	    
+			return;
+		}
+		
+       	for(i = 0; i < argc; i += 2) {					// step through the arguments and put the sprite numbers into the array
+       		k = getinteger(argv[i]);
+       	    if(k < 0 || k > MAX_NBR_OF_BTNS) error("Touch index out of range");
+			item_init[k] = 0;	// de-validize item
+   		}
+
+		touch_active = 0;	
+	    for(i = 0; i <= MAX_NBR_OF_BTNS; i++) {
+			if (item_init[i] == 0x55AA) touch_active = 1;	// any item still active?			
+		}	    
+		return;
+	}
+	if((p = checkstring(cmdline, "ITEM SIZE")) != NULL) {
+		getargs(&p, 3, ",");
+		if(argc != 3) error("Invalid syntax");
+		item_sizex = getinteger(argv[0]);
+		item_sizey = getinteger(argv[2]);
+		if(item_sizex < 10 || item_sizey < 10) error("Touch item too small");
+		return;	    
+	}
+	if((p = checkstring(cmdline, "CHECK")) != NULL) {
+		checktouch();
+		return;
+ 
+	}
+	if((p = checkstring(cmdline, "RELEASE")) != NULL) {
+		if (DetectTouch()) {
+			while (DetectTouch()) mSec(50);  // wait for touch released
+		}
+		return;
+	}
+	if((p = checkstring(cmdline, "WAIT")) != NULL) {
+		if (!DetectTouch()) {
+			while (!DetectTouch()) mSec(50);  // wait for touch occured
+			checktouch();
+		}
+		return;
+	}
+	error("Expected ITEMCREATE/REMOVE/SIZE, CHECK, RELEASE or WAIT");
+}
 
 
 // ######################################################################################
 // Some graphic widgets
 // ######################################################################################
 
-// HBar(x,y),Wert,Farbe,Fill
-void cmd_hbar(void) {
+// TODO: merge to one GRAPH command
+// GRAPH HBar(x,y),Wert,Farbe,Fill
+void cmd_drawhbar(void) {
 	int x1, y1, y2, colour, myval, fill, box, scale;
 	char *p;
 	getargs(&cmdline, 7, ",");
 
-	if(argc < 2) error("MM_Custom - Invalid syntax");
+	if(argc < 2) error("Invalid widget syntax");
 	x1 = lastx; y1 = lasty; colour = DefaultFgColour;		// set the defaults for optional components
 	p = argv[0];
 	// the start point is specified
-	if(*p != '(') error("MM_Custom - Expected opening bracket");
+	if(*p != '(') error("Expected opening bracket");
 	getcoord(p + 1, &x1, &y1);
 	p = getclosebracket(p + 1) + 1;
 
@@ -657,17 +706,17 @@ void cmd_hbar(void) {
 
 }
 
-// VBar(x,y),Wert,Farbe,BFS
-void cmd_vbar(void) {
+// GRAPH VBar(x,y),Wert,Farbe,BFS
+void cmd_drawvbar(void) {
 	int x1, y1, x2, colour, myval, fill, box, scale;
 	char *p;
 	getargs(&cmdline, 7, ",");
 
-	if(argc < 2) error("MM_Custom - Invalid syntax");
+	if(argc < 2) error("Invalid widget syntax");
 	x1 = lastx; y1 = lasty; colour = DefaultFgColour;		// set the defaults for optional components
 	p = argv[0];
 	// the start point is specified
-	if(*p != '(') error("MM_Custom - Expected opening bracket");
+	if(*p != '(') error("Expected opening bracket");
 	getcoord(p + 1, &x1, &y1);
 	p = getclosebracket(p + 1) + 1;
 
@@ -726,17 +775,17 @@ void cmd_vbar(void) {
 	}
 }
 
-void cmd_sled(void) {
-// draws a LED, usage SLED(x,y),value,colour
+void cmd_drawled(void) {
+// GRAPH LED draws a LED, usage GRAPH LED(x,y),value,colour
 	int x1, y1, colour, myval;
 	char *p;
 	getargs(&cmdline, 5, ",");
 
-	if(argc < 2) error("MM_Custom - Invalid syntax");
+	if(argc < 2) error("Invalid widgetsyntax");
 	x1 = lastx; y1 = lasty; colour = DefaultFgColour;		// set the defaults for optional components
 	p = argv[0];
 	// the start point is specified
-	if(*p != '(') error("MM_Custom - Expected opening bracket");
+	if(*p != '(') error("Expected opening bracket");
 	getcoord(p + 1, &x1, &y1);
 	p = getclosebracket(p + 1) + 1;
 

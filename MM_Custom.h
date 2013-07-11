@@ -44,20 +44,14 @@ Include file that contains the globals and defines for MMCustom.c in the Maximit
 //      void cmd_???(void)
 //      void fun_???(void)
 //      void op_???(void)
-	void cmd_createitem(void);
-	void cmd_removeitem(void);
-	void cmd_setitem(void);
-	void fun_getitem(void);
-	void cmd_itemsize(void);
-	void cmd_checktouch(void);
-	void cmd_touchrelease(void);
-
-	void cmd_hbar(void);
-	void cmd_vbar(void);
-	void cmd_sled(void);
-	void fun_touchx(void);
-	void fun_touchy(void);
-	void fun_touchitemhit(void);
+	void cmd_touch(void);
+	void cmd_touchval(void);
+	void fun_touchval(void);
+	
+	
+	void cmd_drawhbar(void);
+	void cmd_drawvbar(void);
+	void cmd_drawled(void);
 #endif
 
 
@@ -71,15 +65,13 @@ Include file that contains the globals and defines for MMCustom.c in the Maximit
 // and P is the precedence (which is only used for operators and not commands)
 // the format is:
 //    TEXT			TYPE		P	FUNCTION TO CALL
-	{ "TouchItemCreate",		T_CMD,		0, 	cmd_createitem},
-	{ "TouchItem(",		T_CMD | T_FUN,		0, 	cmd_setitem},
-	{ "TouchItemRemove(",		T_CMD,		0, 	cmd_removeitem},
-	{ "TouchItemSize",		T_CMD,		0,	cmd_itemsize},
-	{ "TouchCheck",		T_CMD,		0,	cmd_checktouch},
-	{ "TouchRelease",		T_CMD,		0,	cmd_touchrelease},
-	{ "DrawHBar",		T_CMD,		0,	cmd_hbar},
-	{ "DrawVBar",		T_CMD,		0,	cmd_vbar},
-	{ "DrawLED",		T_CMD,		0,	cmd_sled},
+	{ "Touch Value(",		T_CMD | T_FUN,		0, 	cmd_touchval},
+	{ "Touch",			T_CMD,		0, 	cmd_touch},
+	
+// TODO: merge to one WIDGET command
+	{ "Graph HBar",		T_CMD,		0,	cmd_drawhbar},
+	{ "Graph VBar",		T_CMD,		0,	cmd_drawvbar},
+	{ "Graph LED",		T_CMD,		0,	cmd_drawled},
   
 #endif
 
@@ -92,10 +84,7 @@ Include file that contains the globals and defines for MMCustom.c in the Maximit
 // and P is the precedence (which is only used for operators)
 // the format is:
 //    TEXT			TYPE				P	FUNCTION TO CALL
-	{ "TouchX",		T_FNA | T_NBR,		0,	fun_touchx},
-	{ "TouchY",		T_FNA | T_NBR,		0,	fun_touchy},
-	{ "TouchItem(",	T_FUN | T_NBR,		0,	fun_getitem},
-	{ "TouchItemHit",	T_FUN | T_NBR,	0,	fun_touchitemhit},
+	{ "Touch Value(",		T_FUN | T_NBR,		0,	fun_touchval},
 
 #endif
 
