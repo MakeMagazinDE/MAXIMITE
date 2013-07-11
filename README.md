@@ -21,33 +21,33 @@ Touchscreen additions:
 
 Touch Item Size x_size,y_size		'set button/switch size in pixels for all subsequent TouchItemCreates
 
-' make touch item type (B)utton or (S)witch or (R)adio or (C)heckbox
+' make touch item type (B)utton or (S)witch or (R)adio or (C)heckbox<br>
 Touch Item Create refnum, x, y, "caption", colour, [B][S][R][C] 
 
-' set touch item value manually
+' set touch item value manually<br>
 Touch Value(refnum) = value			
 
-' handle all buttons/switch events and set items accordingly, to be used within loop
+' handle all buttons/switch events and set items accordingly, to be used within loop<br>
 Touch Check     
 
-value = Touch Value(refnum)	' retrieve value of touch item (and reset button state to unpressed)
-xcoord = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none
-ycoord = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none
+value = Touch Value(refnum)	' retrieve value of touch item (and reset button state to unpressed)<br>
+xcoord = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none<br>
+ycoord = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none<br>
 refnum = Touch Value(#I)	' retrieve item Refnum of last item hit
 
-' Wait for any touch released
+' Wait for any touch released<br>
 Touch Release	
 
-' Wait until any touch happened
+' Wait until any touch happened<br>
 Touch Wait	
 
-' remove one or more touch item from list
+' remove one or more touch item from list<br>
 Touch Item Remove [refnum][,refnum,refnum,..]	
 
-' remove all touch item from list
+' remove all touch item from list<br>
 Touch Item Remove ALL	
 
-See BTNDEMO.BAS in DEMO.zip for example use.
+See BTNDEMO.BAS in DEMO.zip for example use.<br>
 
 MMBASIC (c) by Geoff Graham, 2011-2013. Touch Additions and graphic widgets (c) by Carsten Meyer 2013.
 
