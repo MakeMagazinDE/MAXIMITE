@@ -14,30 +14,38 @@ supply and optional touchscreen pins (types HannStar HSD043I9W1-A, EastRising ER
 Screen resolution is 480 x 272 px which yields 80 chars and 22 lines of text in MMBASIC.
 Mode 4 (half resolution graphics) not supported.
 
-For those who want to compile their own firmware: Use my video.c source file instead of original and add MMCUSTOM.c to your project. Disk size for A: should be reduced to fit in flash memory. Please note #define TFT_* in video.c to select either PSP/Sharp LQ043 compatible or generic TFT (TFT_HANN), have slihghtly different timing.
+For those who want to compile their own firmware: Use my video.c source file instead of original and add MMCUSTOM.c to your project. Disk size for A: should be reduced to fit in flash memory. Please note #define TFT_ in video.c to select either PSP/Sharp LQ043 compatible or generic TFT (TFT_HANN), have slihghtly different timing.
 
 
 Touchscreen additions:
 
-Touch Item Size *x_size*,*y_size*		'set button/switch size in pixels for all subsequent TouchItemCreates
+Touch Item Size x_size,y_size		'set button/switch size in pixels for all subsequent TouchItemCreates
 
-Touch Item Create *refnum*, x, y, "Caption", *colour*, *type* [B][S][R][C] ' make (B)utton or (S)witch or (R)adio or (C)heckbox
+' make touch item type (B)utton or (S)witch or (R)adio or (C)heckbox
+Touch Item Create refnum, x, y, "caption", colour, [B][S][R][C] 
 
-Touch Value(*refnum*) = value			' set touch item value manually
+' set touch item value manually
+Touch Value(refnum) = value			
 
-Touch Check     ' handle all buttons/switch events and set items accordingly, to be used within loop
+' handle all buttons/switch events and set items accordingly, to be used within loop
+Touch Check     
 
-*value* = Touch Value(*refnum*)	' retrieve value of touch item (and reset button state to unpressed)
-*xcoord* = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none
-*ycoord* = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none
-*refnum* = Touch Value(#I)	' retrieve item Refnum of last item hit
+value = Touch Value(refnum)	' retrieve value of touch item (and reset button state to unpressed)
+xcoord = Touch Value(#X)	' retrieve X coordinate of current touch or -1 if none
+ycoord = Touch Value(#Y)	' retrieve Y coordinate of current touch or -1 if none
+refnum = Touch Value(#I)	' retrieve item Refnum of last item hit
 
-Touch Release	' Wait for any touch released
+' Wait for any touch released
+Touch Release	
 
-Touch Wait	' Wait until any touch happened
+' Wait until any touch happened
+Touch Wait	
 
-Touch Item Remove [*refnum*][,*refnum*,*refnum*,..]	' remove one or more touch item from list
-Touch Item Remove ALL	' remove all touch item from list
+' remove one or more touch item from list
+Touch Item Remove [refnum][,refnum,refnum,..]	
+
+' remove all touch item from list
+Touch Item Remove ALL	
 
 See BTNDEMO.BAS in DEMO.zip for example use.
 
