@@ -1,18 +1,18 @@
 c't TFT Maximite
 ================
 
-BASIC panel computer with TFT touchscreen
+<b>BASIC panel computer with TFT touchscreen</b>
 
 MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't magazine.
 
 Files:
 
-TFT_Maximite.hex: Firmware HEX file with MMBASIC 4.4A, to be used with bootloader<br>
-TFT MM PartsList.txt: parts list<br>
-TFT MM Dimensions.pdf: board and connector dimensions<br>
-TFT MM Silk.pdf:	parts placement silk screen print<br>
-TFT MM Schaltplan.pdf: schematic<br>
-wordfile_mm.txt:       MMBASIC Wordfile for UltraEdit syntax highlighting
+<b>TFT_Maximite.hex</b> Firmware HEX file with MMBASIC 4.4A, to be used with bootloader<br>
+<b>TFT MM PartsList.txt</b> parts list<br>
+<b>TFT MM Dimensions.pdf</b> board and connector dimensions<br>
+<b>TFT MM Silk.pdf</b>	parts placement silk screen print<br>
+<b>TFT MM Schaltplan.pdf</b> schematic<br>
+<b>wordfile_mm.txt</b>       MMBASIC Wordfile for UltraEdit syntax highlighting
 
 Useful links:
 
