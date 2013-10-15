@@ -12,6 +12,7 @@ Files:
 <b>TFT MM Dimensions.pdf</b> board and connector dimensions<br>
 <b>TFT MM Silk.pdf</b>	parts placement silk screen print<br>
 <b>TFT MM Schaltplan.pdf</b> schematic<br>
+<b>TFT Maximite Manual.pdf</b> documentation to MMBASIC's new TOUCH functions and commands<br>
 <b>wordfile_mm.txt</b>       MMBASIC Wordfile for UltraEdit syntax highlighting
 
 Useful links:
