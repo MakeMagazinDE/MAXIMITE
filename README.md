@@ -7,12 +7,12 @@ MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't ma
 
 Files:
 
-TFT_Maximite.hex      Firmware HEX file with MMBASIC 4.4A, to be used with bootloader<br>
-TFT MM PartsList.txt  parts list<br>
-TFT MM Dimensions.pdf board and connector dimensions<br>
-TFT MM Silk.pdf	parts placement silk screen print<br>
-TFT MM Schaltplan.pdf schematic<br>
-wordfile_mm.txt       MMBASIC Wordfile for UltraEdit syntax highlighting
+TFT_Maximite.hex: Firmware HEX file with MMBASIC 4.4A, to be used with bootloader<br>
+TFT MM PartsList.txt: parts list<br>
+TFT MM Dimensions.pdf: board and connector dimensions<br>
+TFT MM Silk.pdf:	parts placement silk screen print<br>
+TFT MM Schaltplan.pdf: schematic<br>
+wordfile_mm.txt:       MMBASIC Wordfile for UltraEdit syntax highlighting
 
 Useful links:
 
