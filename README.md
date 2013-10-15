@@ -1,7 +1,7 @@
 c't TFT Maximite
 ================
 
-<b>BASIC panel computer with TFT touchscreen</b>
+<b>BASIC panel computer with TFT touchscreen</b> based on PIC32MX695 microcontroller
 
 MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't magazine.
 
