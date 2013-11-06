@@ -15,9 +15,9 @@ Files:
 <b>TFT Maximite Manual.pdf</b> documentation to MMBASIC's new TOUCH functions and commands<br>
 <b>wordfile_mm.txt</b>       MMBASIC Wordfile for UltraEdit syntax highlighting
 
-*Useful links:*
+<b>Useful links:</b>
 
-http://www.segor.de/#Q%3DTFTMaximite4.3%252522Touch%26M%3D1 TFT Maximite pre-assembled Kit, 2 versions available with 4.3" and 5" TFT<br>
+http://www.segor.de/#Q%3DTFTMaximite4.3%252522Touch%26M%3D1 TFT Maximite pre-assembled kit from Segor, 2 versions available with 4.3" and 5" TFT<br>
 http://www.mmbasic.com	MMBASIC Homepage with documentation<br>
 http://geoffg.net/maximite.html	Original Maximite homepage, links to serial USB driver, 
 utilities and application software<br>
