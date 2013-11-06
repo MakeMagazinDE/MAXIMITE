@@ -20,6 +20,7 @@ Useful links:
 http://www.mmbasic.com	MMBASIC Homepage with documentation<br>
 http://geoffg.net/maximite.html	Original Maximite homepage, links to serial USB driver, 
 utilities and application software<br>
+http://geoffg.net/tft-maximite.html TFT Maximirte support page from Geoff Graham, with most recent firmware updates<br>
 http://www.c-com.com.au/MMedit.htm	MMedit, Uploader and editor for MMBASIC sources, 
 also applicable for TFT Maximite<br>
 http://www.circuitgizmos.com/products/cgcolormax2/cgcolormax2.shtml	GC Color Maximite 2 with MMIDE utility, 
