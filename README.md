@@ -27,5 +27,8 @@ also applicable for TFT Maximite<br>
 http://www.circuitgizmos.com/products/cgcolormax2/cgcolormax2.shtml	GC Color Maximite 2 with MMIDE utility, 
 also applicable for TFT Maximite<br>
 
+<b>Remarks</b>
+
+Touch calibration may not work if real time clock is not set or clock battery removed. Before using TOUCH CALIBRATE, please insert 3V CR2032 battery and set time and date with commands TIME$="xx:xx" and DATE$="xx-xx-xxxx".
 
 -cm
