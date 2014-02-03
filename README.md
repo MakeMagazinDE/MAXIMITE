@@ -17,7 +17,7 @@ Files:
 <b>wordfile_mm.txt</b>       MMBASIC Wordfile for UltraEdit syntax highlighting
 
 <b>TFT_Maximite_xxx.txt</b>       latest firmware build (current: 4.4B1), to be uploaded with Maximite bootloader.
-<b>TFT_Maximite_plus_bootloader_44B.hex   initial TFT firmware version, includes Maximite bootloader, to be flashed with PicKit3 or similar programmer.
+<b>TFT_Maximite_plus_bootloader_44B.hex   initial TFT firmware version, includes Maximite bootloader, to be flashed with PicKit3 or similar programmer to virgin PIC32
 
 <b>Useful links:</b>
 
@@ -33,12 +33,12 @@ also applicable for TFT Maximite<br>
 
 <b>Remarks</b>
 
-Touch calibration may not work if real time clock is not set or clock battery removed. Before using TOUCH CALIBRATE, 
-please insert 3V CR2032 battery and set time and date with commands TIME$="xx:xx" and DATE$="xx-xx-xxxx".
+Touch calibration may not work if real time clock is not set or clock battery removed. Before using TOUCH CALIBRATE, please insert 3V CR2032 battery and set time and date with commands TIME$="xx:xx" and DATE$="xx-xx-xxxx".
+
+Due to layout quirk, MMBASIC Pin 20 is not usable (should be connected to PIC32 Pin 17 instead of Pin 11).
 
 <b>Firmware History</b>
 
-4.4B1 - Added touch commands TOUCH DISABLE(item) and TOUCH ENABLE(item) to temporarily enable or disable a touch item, changed 
-TOUCH REMOVE(item) to also erase item from screen to background color
+4.4B1 - Added touch commands TOUCH DISABLE(item) and TOUCH ENABLE(item) to temporarily enable or disable a touch item, changed TOUCH REMOVE(item) to also erase item from screen to background color
 4.4B - Officially released by Geoff Graham
 4.4A - initial TFT firmware version
