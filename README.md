@@ -14,10 +14,10 @@ Files:
 <b>TFT MM Schaltplan.pdf</b> schematic<br>
 <b>TFT Maximite Manual.pdf</b> documentation to MMBASIC's new TOUCH functions and commands<br>
 <b>TFT Maximite Manual.pdf</b> documentation to MMBASIC's new TOUCH functions and commands<br>
-<b>wordfile_mm.txt</b>       MMBASIC Wordfile for UltraEdit syntax highlighting
+<b>wordfile_mm.txt</b> MMBASIC Wordfile for UltraEdit syntax highlighting
 
-<b>TFT_Maximite_xxx.hex</b>       latest firmware build (current: 4.4B1), to be uploaded with Maximite bootloader.
-<b>TFT_Maximite_plus_bootloader_44B.hex   initial TFT firmware version, includes Maximite bootloader, to be flashed with PicKit3 or similar programmer to virgin or corrupted PIC32
+<b>TFT_Maximite_xxx.hex</b> latest firmware build (current: 4.4B1), to be uploaded with Maximite bootloader.
+<b>TFT_Maximite_plus_bootloader_44B.hex</b> initial TFT firmware version, includes Maximite bootloader, to be flashed with PicKit3 or similar programmer to virgin or corrupted PIC32
 
 <b>Useful links:</b>
 
