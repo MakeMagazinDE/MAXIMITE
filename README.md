@@ -3,7 +3,19 @@ c't TFT Maximite
 
 <b>BASIC panel computer with TFT touchscreen</b> based on PIC32MX695 microcontroller</b>
 
-MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't magazine (www.ct-hacks.de).
+### Updates:
+
+<b>TFT MM Schaltplan 1_4.pdf/b> schematics for new version 1.4: 
+ ** Correct pin assigntment for all MMBASIC Pins on PL6 (Pin 20 bug fixed)
+ ** Additional I/O pins available on PL9: D4 to D13, A4, A5 and unfiltered PWM signals
+ ** Modification of vertical sync circuit for flicker-free display (R23, D3)
+ ** Higher voltage for D5 zener, does not limit display brightness anymore
+ ** Relocated PL12 for optional connector/SD slot break-out board
+
+Update of firmware in progress. Present firmware 4.4b1 will run on TFT Maximite 1.4 without change.
+
+MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't 
+magazine (www.ct-hacks.de).
 
 ### Files:
 
