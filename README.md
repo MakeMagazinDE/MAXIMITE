@@ -3,20 +3,27 @@ c't TFT Maximite
 
 <b>BASIC panel computer with TFT touchscreen</b> based on PIC32MX695 microcontroller</b>
 
+MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't 
+magazine (www.ct-hacks.de).
+
 ### Updates:
 
-<b>TFT MM Schaltplan 1_4.pdf</b> schematics for new version 1.4 
+<b>TFT MM Schaltplan 1_4.pdf</b> schematics for new hardware version #1.4 
 
 * Correct pin assignment for all MMBASIC Pins on PL6 (Pin 20 bug fixed)
 * Additional I/O pins available on PL9: D4 to D13, A4, A5 and unfiltered PWM signals
 * Modification of vertical sync circuit for flicker-free display (R23, D3)
 * Higher voltage for D5 zener, does not limit display brightness anymore
 * Relocated PL12 for optional connector/SD slot break-out board
+* Current firmware 4.4b1 will run on TFT Maximite 1.4 without change
 
-Update of firmware in progress. Present firmware 4.4b1 will run on TFT Maximite 1.4 without change.
+### Firmware History
 
-MMBASIC (c) by Geoff Graham, TFT touch functions (c) by Carsten Meyer and c't 
-magazine (www.ct-hacks.de).
+* <b>4.4B1</b> Added touch commands TOUCH DISABLE(item) and TOUCH ENABLE(item) to temporarily enable or disable a touch item, changed TOUCH REMOVE(item) to also erase item from screen to current background color
+* <b>4.4B</b> Officially released by Geoff Graham
+* <b>4.4A</b> initial TFT firmware version on Segor kit, hardware #1.3
+
+
 
 ### Files:
 
@@ -55,8 +62,3 @@ Touch calibration may not work if real time clock is not set or clock battery re
 
 Due to layout quirk, MMBASIC Pin 20 is not usable (should be connected to PIC32 Pin 17 instead of Pin 11).
 
-### Firmware History
-
-4.4B1 - Added touch commands TOUCH DISABLE(item) and TOUCH ENABLE(item) to temporarily enable or disable a touch item, changed TOUCH REMOVE(item) to also erase item from screen to current background color
-4.4B - Officially released by Geoff Graham
-4.4A - initial TFT firmware version on Segor kit
