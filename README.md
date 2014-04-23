@@ -6,11 +6,11 @@ c't TFT Maximite
 MMBASIC and Colour Maximite design (c) by Geoff Graham, TFT Maximite schematics, board layout artwork and TFT touch functions (c) by Carsten Meyer and c't 
 magazine (www.ct-hacks.de).
 
-### Updates:
+### Updates
 
-<b>TFT MM Schaltplan 1_4.pdf</b> Schematics for hardware revision #1.4 
-<b>TFT MM Silk 1_4.pdf</b> Component placement silk screen print for hardware revision #1.4 
-<b>TFT MM Dimensions 1_4.pdf</b> Board and connector dimensions drawing for hardware revision #1.4 
+<b>TFT MM Schaltplan 1_4.pdf</b> Schematics for hardware revision #1.4<br>
+<b>TFT MM Silk 1_4.pdf</b> Component placement silk screen print for hardware revision #1.4<br>
+<b>TFT MM Dimensions 1_4.pdf</b> Board and connector dimensions drawing for hardware revision #1.4<br>
 
 * Correct pin assignment for all MMBASIC Pins on PL6 (Pin 20 bug fixed)
 * Additional I/O pins available on PL9: D4 to D13, A4, A5 and unfiltered PWM signals
@@ -19,7 +19,7 @@ magazine (www.ct-hacks.de).
 * Relocated PL12 for optional connector/SD slot break-out board
 * Current firmware version 4.4b1 will run on TFT Maximite #1.4 without change
 
-### Firmware History:
+### Firmware History
 
 * <b>4.4B1</b> Added touch commands:
    * TOUCH DISABLE(item) and TOUCH ENABLE(item) to temporarily enable or disable a touch item
@@ -27,7 +27,7 @@ magazine (www.ct-hacks.de).
 * <b>4.4B</b> Officially released by Geoff Graham
 * <b>4.4A</b> initial TFT firmware version on Segor kit, hardware #1.3
 
-### Files:
+### Files
 
 <b>TFT_Maximite.hex</b> Firmware HEX file with MMBASIC 4.4A, to be used with bootloader<br>
 <b>TFT MM PartsList.txt</b> Parts list<br>
@@ -41,12 +41,12 @@ magazine (www.ct-hacks.de).
 <b>TFT_Maximite_xxx.hex</b> latest firmware build (current: 4.4B1), to be uploaded with Maximite bootloader.
 <b>TFT_Maximite_plus_bootloader_44B.hex</b> initial TFT firmware version, includes Maximite bootloader, to be flashed with PicKit3 or similar programmer to virgin or corrupted PIC32
 
-### Folders:
+### Folders
 
 <b>DEMO_BAS</b> contains several MMBASIC programs for demonstration of touch functions and commands. Copy to SD-card and run from BASIC prompt (AUTORUN with file select utility will start automatically)<br>
 <b>SOURCE</b> Contains source files for those who want to modify the BASIC interpreter or add own BASIC commands. You also need the sources from Geoff Graham (see below). Not needed for the rest of us.
 
-### Useful links:
+### Useful Links
 
 http://www.segor.de/#Q%3DTFTMaximite4.3%252522Touch%26M%3D1 TFT Maximite pre-assembled kit from Segor, 2 versions available with 4.3" and 5" TFT<br>
 http://www.mmbasic.com	MMBASIC Homepage with documentation<br>
