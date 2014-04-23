@@ -3,8 +3,9 @@ c't TFT Maximite
 
 <b>BASIC panel computer with TFT touchscreen</b> based on PIC32MX695 microcontroller
 
-MMBASIC and Colour Maximite design (c) by Geoff Graham, TFT Maximite schematics, board layout artwork and TFT touch functions (c) by Carsten Meyer and c't 
-magazine (www.ct-hacks.de).
+MMBASIC and Colour Maximite design (c) by Geoff Graham<br>
+TFT Maximite schematics, board layout artwork and TFT touch functions (c) by Carsten Meyer and c't 
+magazine (www.ct-hacks.de)
 
 ### Updates
 
